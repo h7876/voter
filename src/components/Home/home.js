@@ -3,7 +3,9 @@ import { Toolbar, AppBar} from '@material-ui/core';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import StyledCards from '../Cards/Card';
 import './home.css'
+import { io } from "socket.io-client";
 
+const socket = io("http://localhost:3131");
 
 export default class Home extends Component {
     
@@ -45,7 +47,7 @@ export default class Home extends Component {
         }
       };
         return(
-            <div backgroundColor="gray">
+            <div>
                 <ThemeProvider theme={this.theme}>
                   <AppBar position="fixed">
                     <Toolbar/>
@@ -54,7 +56,7 @@ export default class Home extends Component {
               <div style={{paddingTop:'300px', margin:'auto',width: '50%'}}>
               <div style={styles.div}>{this.state.members.map((el, i)=> {
                 return(
-                  <div style={styles.card}>
+                  <div key={el+i} style={styles.card}>
                     {StyledCards(el)}
                   </div>
                   )})}

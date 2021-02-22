@@ -3,7 +3,7 @@ import Home from './components/Home/home';
 
 function App() {
   return (
-    <div className="App" backgroundColor="black">
+    <div className="App">
      <Home/>
     </div>
   );
