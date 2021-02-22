@@ -8,7 +8,11 @@ const io = require('socket.io')(http, {
   }
 });
 
-
+io.on('connection', (socket) => {
+  socket.on('chat message', (msg) => {
+    console.log('message: ' + msg);
+  });
+});
 
 io.on('connection', (socket) => {
   console.log('a user connected');

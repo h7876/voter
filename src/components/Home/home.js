@@ -26,6 +26,10 @@ export default class Home extends Component {
         },
       });
 
+      handleChange(input){
+        socket.emit('chat message', input);
+      }
+
     render(){
 
       const styles = {
@@ -53,7 +57,9 @@ export default class Home extends Component {
                     <Toolbar/>
                   </AppBar>
                 </ThemeProvider>
+                <input style={{position:'absolute', marginTop:'200px'}} onChange={event => this.handleChange(event.target.value)}></input>
               <div style={{paddingTop:'300px', margin:'auto',width: '50%'}}>
+                
               <div style={styles.div}>{this.state.members.map((el, i)=> {
                 return(
                   <div key={el+i} style={styles.card}>
