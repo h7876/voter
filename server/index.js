@@ -10,7 +10,17 @@ const io = require('socket.io')(http, {
 
 io.on('connection', (socket) => {
   socket.on('chat message', (msg) => {
-    console.log('message: ' + msg);
+    socket.broadcast.emit('incoming data', msg)
+  });
+  socket.on('join', (roomcode, name)=> {
+    socket.join(roomcode)
+    socket.to(roomcode).emit('name', name);
+  })
+  socket.on('chat message', (msg) => {
+    socket.emit('incoming data', msg)
+  });
+  socket.on('delete data', () => {
+    socket.broadcast.emit('delete data')
   });
 });
 
