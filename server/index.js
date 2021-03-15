@@ -9,19 +9,28 @@ const io = require('socket.io')(http, {
 });
 
 io.on('connection', (socket) => {
-  socket.on('chat message', (msg) => {
-    socket.broadcast.emit('incoming data', msg)
-  });
   socket.on('join', (roomcode, name)=> {
     socket.join(roomcode)
-    socket.to(roomcode).emit('name', name);
+    io.to(roomcode).emit('name', name);
   })
-  socket.on('chat message', (msg) => {
-    socket.emit('incoming data', msg)
+  socket.on('chat message', (msg, roomcode) => {
+    socket.join(roomcode)
+    io.to(roomcode).emit('incoming data', msg)
   });
   socket.on('delete data', () => {
     socket.broadcast.emit('delete data')
   });
+});
+
+io.on('chat message', (socket, roomcode, msg) => {
+  socket.join(roomcode)
+  io.to(roomcode).emit('incoming data', msg)
+});
+
+io.on('join', (socket, roomcode, name) => {
+  socket.join(roomcode)
+  io.to(roomcode).emit('incoming data', msg)
+  io.to(roomcode).emit('name', name);
 });
 
 io.on('connection', (socket) => {
