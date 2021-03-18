@@ -166,10 +166,10 @@ export default class Home extends Component {
                                   <div key={i + el} className="flip-card-flip">
                                   <div className="flip-card-inner">
                                     <div className="flip-card-back">
-                                      {StyledCards(el)}
+                                      {StyledCards(el, this.state.reveal)}
                                     </div>
                                     <div className="flip-card-front">
-                                          {/* {StyledCards(el.name)} */}
+                                          {StyledCards(el)}
                                         </div>
 
                                   </div>
@@ -185,10 +185,10 @@ export default class Home extends Component {
                                       <div key={i + el} className="flip-card">
                                       <div className="flip-card-inner">
                                         <div className="flip-card-front">
-                                          {StyledCards(el.name)}
+                                          {StyledCards(el)}
                                         </div>
                                         <div className="flip-card-back">
-                                          {StyledCards(el.name)}
+                                          {StyledCards(el)}
                                         </div>
                                       </div>
                                     </div>

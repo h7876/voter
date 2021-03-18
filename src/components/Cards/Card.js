@@ -13,16 +13,16 @@ const NewCard = styled(Card)({
   padding: '0 30px',
 });
 
-export default function StyledCards(text) {
+export default function StyledCards(text, show) {
   return <NewCard>
     
-    {text.message ? 
-    <div>
-      {text.name}<br></br>{text.message}
+    {show ? 
+    <div >
+      <p style={{marginTop:'15px',fontSize:'30px'}}>{text.name}</p> <p style={{marginTop:'15px',fontSize:'30px'}}>{text.message}</p>
     </div>
     : 
-    <div>
-    {text}
+    <div >
+    <p style={{marginTop:'15px',fontSize:'30px'}}>{text.name}</p>
     </div>
     }
     </NewCard>;
