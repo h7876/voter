@@ -124,28 +124,29 @@ export default class Home extends Component {
           padding: 10
         }
       };
-      let createOrJoin = <div>
-        <button style={{position:'relative', marginTop:'200px'}} onClick={(()=> {this.setState({create: 'true'})})}>Create Room</button>
-        <button style={{position:'relative', marginTop:'200px'}}onClick={(()=> {this.setState({create: 'false'})})}>Join Room</button>
+      let createOrJoin = <div id="start">
+        <button style={{position:'relative'}} onClick={(()=> {this.setState({create: 'true'})})}>Create Room</button>
+        <button style={{position:'relative'}} onClick={(()=> {this.setState({create: 'false'})})}>Join Room</button>
       </div>
-      let create = <div>
-                <input style={{position:'relative', marginTop:'200px'}} onChange={this.handleName}></input>
-                <button style={{position:'relative', marginTop:'230px'}} onClick={this.createRoom}>Create</button>
+      let create = <div id="no">
+                <input style={{position:'relative'}} onChange={this.handleName} placeholder="Name"></input>
+                <button style={{position:'relative'}} onClick={this.createRoom}>Create</button>
       </div>
-            let join = <div>
-                <input style={{position:'absolute', marginTop:'200px'}} onChange={this.handleRoom}></input>
-                <input style={{position:'relative', marginTop:'200px'}} onChange={this.handleName}></input>
-                <button style={{position:'relative', marginTop:'230px'}} onClick={this.joinRoom}>Join</button>
+            let join = <div id="no">
+                <input  style={{position:'relative'}} onChange={this.handleRoom} placeholder="Room Code"></input>
+                <br></br>
+                <input style={{position:'relative'}} onChange={this.handleName} placeholder="Name"></input>
+                <button style={{position:'relative'}} onClick={this.joinRoom}>Join</button>
             </div>
             let content = <div>
-               <h3 style={{position:'absolute', top:'80px', left:'10px'}}>{this.state.room}</h3>
+               <h3 style={{position:'absolute', top:'80px', left:'10px'}}>Room Code: {this.state.room}</h3>
                {/* <h3 style={{position:'absolute', marginTop:'220px'}}>{this.state.name}</h3> */}
                {/* <h3 style={{position:'absolute', marginTop:'240px'}}>{this.state.isHost.toString()}</h3> */}
                 {/* <div style={{position:'absolute', marginTop:'230px'}} >{this.state.message}</div> */}
 
                 {this.state.isHost ? 
                   <div id="no">
-                    <input id="vote" value={this.state.messageHandler} style={{position:'relative'}} onChange={this.handleChange}></input>
+                    <input  value={this.state.messageHandler} style={{position:'relative'}} onChange={this.handleChange} placeholder="Type your vote here..."></input>
                     <button className="submit"  onClick={this.submit}>Submit</button>
                     <button style={{position:'relative'}} onClick={this.clearStuff}>Clear</button>
                     <button style={{position:'relative'}} onClick={()=>
@@ -153,9 +154,9 @@ export default class Home extends Component {
         }>Reveal</button> 
                   </div>
                 : 
-                <div style={{position:'relative', marginTop:'50px', width: '100px'}}>
-                <input id="vote" value={this.state.messageHandler} style={{position:'absolute', marginTop:'200px'}} onChange={this.handleChange}></input>
-                  <button style={{position:'relative', marginTop:'220px'}} onClick={this.submit}>Submit</button>
+                <div id="no" style={{position:'relative'}}>
+                <input value={this.state.messageHandler} style={{position:'relative'}} onChange={this.handleChange} placeholder="Type your vote here..."></input>
+                  <button style={{position:'relative'}} onClick={this.submit}>Submit</button>
                   </div>
                 }
               <div style={{paddingTop:'50px', margin:'auto',width: '50%'}}>
