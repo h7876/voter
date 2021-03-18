@@ -14,5 +14,16 @@ const NewCard = styled(Card)({
 });
 
 export default function StyledCards(text) {
-  return <NewCard>{text}</NewCard>;
+  return <NewCard>
+    
+    {text.message ? 
+    <div>
+      {text.name}<br></br>{text.message}
+    </div>
+    : 
+    <div>
+    {text}
+    </div>
+    }
+    </NewCard>;
 }

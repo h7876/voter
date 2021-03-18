@@ -13,12 +13,14 @@ export default class Home extends Component {
         this.state = {
           members: [],
           stuffs: [],
-          message: "",
+          message: {},
           messageHandler: '',
           name: '',
           handleRoom: '',
           room: '',
-          create: ''
+          create: '',
+          isHost: false,
+          reveal: false
         }
         this.handleChange = this.handleChange.bind(this)
         this.submit = this.submit.bind(this)
@@ -28,6 +30,7 @@ export default class Home extends Component {
         this.handleName = this.handleName.bind(this)
         this.handleRoom = this.handleRoom.bind(this)
         this.reJoin = this.reJoin.bind(this)
+        this.reveal = this.reveal.bind(this)
     }
     componentDidMount(){
       socket.on('incoming data', (msg)=> {
@@ -35,6 +38,9 @@ export default class Home extends Component {
       })
       socket.on('name',(name)=> {
         // maybe do stuff relating to people joining here
+      })
+      socket.on('reveal',()=> {
+        this.reveal()
       })
       socket.on('delete data', ()=> {
         this.setState({members: []})
@@ -57,8 +63,10 @@ export default class Home extends Component {
         //this.showStuff();
       }
       submit(){
-        this.setState({message:this.state.messageHandler, messageHandler: ''}, (()=> {
+        let {name, message} = {name: this.state.name, message:this.state.messageHandler}
+        this.setState({message:{message, name}, messageHandler: ''}, (()=> {
           socket.emit('chat message', this.state.message, this.state.room);
+          console.log(this.state.message)
         }))
       }
       updateMessage(msg){
@@ -66,7 +74,7 @@ export default class Home extends Component {
         let members = [...this.state.members]
         
         members.push(msg)
-        this.setState({members:members})
+        this.setState({members:members}, (()=> {console.log(members)}))
       }
       // showStuff(){
         
@@ -79,7 +87,7 @@ export default class Home extends Component {
         this.setState({name: event.target.value})
       }
       joinRoom(){
-        this.setState({room: this.state.handleRoom}, (()=> this.reJoin()))
+        this.setState({room: this.state.handleRoom, isHost:false}, (()=> this.reJoin()))
       }
       reJoin(){
         if(this.state.room){
@@ -91,8 +99,11 @@ export default class Home extends Component {
       }
       createRoom(){
         let newRoom = Math.random().toString(36).substr(2, 5);
-        this.setState({room: newRoom}, (()=> this.reJoin()))
+        this.setState({room: newRoom, isHost:true}, (()=> this.reJoin()))
       }
+      reveal(){
+        this.setState({reveal: !this.state.reveal
+      })}
     render(){
 
       const styles = {
@@ -127,24 +138,90 @@ export default class Home extends Component {
                 <button style={{position:'relative', marginTop:'230px'}} onClick={this.joinRoom}>Join</button>
             </div>
             let content = <div>
-               <h3 style={{position:'absolute', marginTop:'200px'}}>{this.state.room}</h3>
-               <h3 style={{position:'absolute', marginTop:'215px'}}>{this.state.name}</h3>
+               <h3 style={{position:'absolute', top:'80px', left:'10px'}}>{this.state.room}</h3>
+               {/* <h3 style={{position:'absolute', marginTop:'220px'}}>{this.state.name}</h3> */}
+               {/* <h3 style={{position:'absolute', marginTop:'240px'}}>{this.state.isHost.toString()}</h3> */}
                 {/* <div style={{position:'absolute', marginTop:'230px'}} >{this.state.message}</div> */}
-                <input id="vote" value={this.state.messageHandler} style={{position:'absolute', marginTop:'200px'}} onChange={this.handleChange}></input>
-                <button style={{position:'relative', marginTop:'220px'}} onClick={this.submit}>Submit</button>
-                <button style={{position:'relative', marginTop:'230px'}} onClick={this.clearStuff}>Clear</button>
 
-              <div style={{paddingTop:'300px', margin:'auto',width: '50%'}}>
-                
-              <div style={styles.div}>{this.state.members.map((el, i)=> {
-                return(
-                  <div key={el+i} style={styles.card}>
-                    {StyledCards(el)}
+                {this.state.isHost ? 
+                  <div id="no">
+                    <input id="vote" value={this.state.messageHandler} style={{position:'relative'}} onChange={this.handleChange}></input>
+                    <button className="submit"  onClick={this.submit}>Submit</button>
+                    <button style={{position:'relative'}} onClick={this.clearStuff}>Clear</button>
+                    <button style={{position:'relative'}} onClick={()=>
+          socket.emit('reveal', this.state.room)
+        }>Reveal</button> 
                   </div>
-                  )})}
-              </div>
-             </div>
-            </div>
+                : 
+                <div style={{position:'relative', marginTop:'50px', width: '100px'}}>
+                <input id="vote" value={this.state.messageHandler} style={{position:'absolute', marginTop:'200px'}} onChange={this.handleChange}></input>
+                  <button style={{position:'relative', marginTop:'220px'}} onClick={this.submit}>Submit</button>
+                  </div>
+                }
+              <div style={{paddingTop:'50px', margin:'auto',width: '50%'}}>
+              {this.state.reveal === true ?
+                          <div style={styles.div}>{this.state.members.map((el, i)=> {
+                            return (
+                                  <div key={i + el} className="flip-card-flip">
+                                  <div className="flip-card-inner">
+                                    <div className="flip-card-back">
+                                      {StyledCards(el)}
+                                    </div>
+                                    <div className="flip-card-front">
+                                          {/* {StyledCards(el.name)} */}
+                                        </div>
+
+                                  </div>
+                                </div>
+
+                            );})}
+                               </div>
+                               :
+                               <div style={styles.div}>{this.state.members.map((el, i)=> {
+                                return (
+                                  
+                
+                                      <div key={i + el} className="flip-card">
+                                      <div className="flip-card-inner">
+                                        <div className="flip-card-front">
+                                          {StyledCards(el.name)}
+                                        </div>
+                                        <div className="flip-card-back">
+                                          {StyledCards(el.name)}
+                                        </div>
+                                      </div>
+                                    </div>
+                                );})}
+                                   </div>  
+            }
+              {/* <div style={styles.div}>{this.state.members.map((el, i)=> {
+                return (
+                  
+
+                      <div class="flip-card-flip">
+                      <div class="flip-card-inner">
+                        <div key={el + i} class="flip-card-front">
+                          {StyledCards(el.name)}
+                        </div>
+                        <div key={el + i + "back"} class="flip-card-back">
+                          {StyledCards(el)}
+                        </div>
+                      </div>
+                    </div>
+                    
+
+                  
+
+                );})}
+                   </div> */}
+
+                   
+                      </div>
+                      </div>
+                      
+
+            
+            
       const showOptions = this.state.room;
       let options;
       if(!showOptions && this.state.create === 'true'){

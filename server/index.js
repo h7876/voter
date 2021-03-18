@@ -3,7 +3,7 @@ const app = express()
 const http = require('http').Server(app);
 const io = require('socket.io')(http, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://192.168.1.97:3000",
     methods: ["GET", "POST"]
   }
 });
@@ -20,11 +20,20 @@ io.on('connection', (socket) => {
   socket.on('delete data', () => {
     socket.broadcast.emit('delete data')
   });
+  socket.on('reveal', (roomcode) => {
+    socket.join(roomcode)
+    io.to(roomcode).emit('reveal')
+  });
+  
 });
 
 io.on('chat message', (socket, roomcode, msg) => {
   socket.join(roomcode)
   io.to(roomcode).emit('incoming data', msg)
+});
+io.on('reveal', (roomcode) => {
+  socket.join(roomcode)
+  io.to(roomcode).emit('reveal')
 });
 
 io.on('join', (socket, roomcode, name) => {
