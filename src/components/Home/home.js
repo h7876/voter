@@ -20,7 +20,8 @@ export default class Home extends Component {
           room: '',
           create: '',
           isHost: false,
-          reveal: false
+          reveal: false,
+          people: []
         }
         this.handleChange = this.handleChange.bind(this)
         this.submit = this.submit.bind(this)
@@ -31,13 +32,15 @@ export default class Home extends Component {
         this.handleRoom = this.handleRoom.bind(this)
         this.reJoin = this.reJoin.bind(this)
         this.reveal = this.reveal.bind(this)
+        this.updatePeople = this.updatePeople.bind(this)
     }
     componentDidMount(){
       socket.on('incoming data', (msg)=> {
         this.updateMessage(msg)
       })
       socket.on('name',(name)=> {
-        // maybe do stuff relating to people joining here
+        console.log("1")
+        this.updatePeople(name)
       })
       socket.on('reveal',()=> {
         this.reveal()
@@ -45,7 +48,9 @@ export default class Home extends Component {
       socket.on('delete data', ()=> {
         this.setState({members: []})
       })
-      
+      socket.on('newuser', (people)=> {
+        this.setState({people: people})
+      })
     }
      theme = createMuiTheme({
         palette: {
@@ -74,7 +79,14 @@ export default class Home extends Component {
         let members = [...this.state.members]
         
         members.push(msg)
-        this.setState({members:members}, (()=> {console.log(members)}))
+        this.setState({members:members, reveal: false}, (()=> {console.log(members)}))
+      }
+      updatePeople(name){
+        let people = [...this.state.people]
+        people.push(name)
+        this.setState({people:people}, (()=> {
+          socket.emit('newuser', people, this.state.room)
+        }))
       }
       // showStuff(){
         
@@ -91,7 +103,9 @@ export default class Home extends Component {
       }
       reJoin(){
         if(this.state.room){
+          console.log(this.state.people)
           socket.emit('join', this.state.room, this.state.name)
+          socket.emit('name', this.state.room, this.state.name)
         }
       }
       handleRoom(event){
@@ -140,6 +154,15 @@ export default class Home extends Component {
             </div>
             let content = <div>
                <h3 style={{position:'absolute', top:'80px', left:'10px'}}>Room Code: {this.state.room}</h3>
+               <h3 style={{position:'absolute', top:'120px', left:'10px'}}>People in Room:</h3>
+               <div style={{position:'absolute', top:'160px', left:'10px'}}>{this.state.people.map((el, i)=> {
+                            return (
+                                <div key={i + el}>
+                                  <h3>{el}</h3>  
+                                </div>
+
+                            );})}
+                               </div>
                {/* <h3 style={{position:'absolute', marginTop:'220px'}}>{this.state.name}</h3> */}
                {/* <h3 style={{position:'absolute', marginTop:'240px'}}>{this.state.isHost.toString()}</h3> */}
                 {/* <div style={{position:'absolute', marginTop:'230px'}} >{this.state.message}</div> */}
@@ -195,28 +218,7 @@ export default class Home extends Component {
                                 );})}
                                    </div>  
             }
-              {/* <div style={styles.div}>{this.state.members.map((el, i)=> {
-                return (
-                  
 
-                      <div class="flip-card-flip">
-                      <div class="flip-card-inner">
-                        <div key={el + i} class="flip-card-front">
-                          {StyledCards(el.name)}
-                        </div>
-                        <div key={el + i + "back"} class="flip-card-back">
-                          {StyledCards(el)}
-                        </div>
-                      </div>
-                    </div>
-                    
-
-                  
-
-                );})}
-                   </div> */}
-
-                   
                       </div>
                       </div>
                       
