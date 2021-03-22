@@ -31,25 +31,6 @@ io.on('connection', (socket) => {
 
 });
 
-// io.on('chat message', (socket, roomcode, msg) => {
-//   socket.join(roomcode)
-//   io.to(roomcode).emit('incoming data', msg)
-// });
-// io.on('reveal', (roomcode) => {
-//   socket.join(roomcode)
-//   io.to(roomcode).emit('reveal')
-// });
-
-// io.on('name', (socket, roomcode, name) => {
-//   socket.join(roomcode)
-//   io.to(roomcode).emit('newuser', name)
-// });
-
-// io.on('join', (socket, roomcode, name) => {
-//   socket.join(roomcode)
-//   io.to(roomcode).emit('incoming data', msg)
-//   io.to(roomcode).emit('name', name);
-// });
 
 io.on('connection', (socket) => {
   console.log('a user connected');

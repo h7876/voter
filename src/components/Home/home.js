@@ -82,10 +82,9 @@ export default class Home extends Component {
         this.setState({members:members, reveal: false}, (()=> {console.log(members)}))
       }
       updatePeople(name){
-        let people = [...this.state.people]
-        people.push(name)
+        let people = [...this.state.people, name]
         this.setState({people:people}, (()=> {
-          socket.emit('newuser', people, this.state.room)
+          socket.emit('newuser', this.state.people, this.state.room)
         }))
       }
       // showStuff(){
@@ -103,7 +102,6 @@ export default class Home extends Component {
       }
       reJoin(){
         if(this.state.room){
-          console.log(this.state.people)
           socket.emit('join', this.state.room, this.state.name)
           socket.emit('name', this.state.room, this.state.name)
         }
