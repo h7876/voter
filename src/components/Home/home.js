@@ -194,7 +194,7 @@ export default class Home extends Component {
                     {StyledCards(el, this.state.reveal)}
                   </div>
                   <div className="flip-card-front">
-                    {StyledCards(el, this.state.reveal)}
+                    {StyledCards(el, false)}
                   </div>
 
                 </div>
@@ -212,7 +212,7 @@ export default class Home extends Component {
                     {StyledCards(el, this.state.reveal)}
                   </div>
                   <div className="flip-card-back">
-                    {StyledCards(el, this.state.reveal)}
+                    {StyledCards(el, true)}
                   </div>
                 </div>
               </div>
