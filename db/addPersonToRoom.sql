@@ -1,0 +1,1 @@
+insert into Room(uuid, roomid) values($1, $2)
