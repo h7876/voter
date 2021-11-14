@@ -1,1 +1,1 @@
-select r.roomid, p.uuid, p.name from room r left join People p on r.uuid = p.uuid where roomid = $1
+select r.roomid, p.uuid, p.name from People p left join Room r on p.uuid = r.uuid where roomid = $1

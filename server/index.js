@@ -48,8 +48,8 @@ io.on('connection', (socket) => {
 });
 
 //API
-//get users for a room
-app.get('/api/people/:roomid', (req, res) => {
+//get people in a room
+app.get('/api/room/getPeople/:roomid', (req, res) => {
   const dbInstance = req.app.get('db');
   const roomid = req.params.roomid
   dbInstance.getPeopleInRoom([roomid])
@@ -60,11 +60,12 @@ app.get('/api/people/:roomid', (req, res) => {
   res.status(500).send(err)
 });
 })
-//Add user to a room
-app.post('/api/people/add', (req, res)=> {
+
+//Add person to a room TEMP
+app.post('/api/room/addPerson', (req, res)=> {
   console.log(req)
-  let {uuid, roomid} = req.body;
-  req.app.get('db').addPersonToRoom([uuid, roomid]).then(ok=> {
+  let {uuid, roomid, name} = req.body;
+  req.app.get('db').addPersonToRoom([uuid, roomid, name]).then(ok=> {
       res.sendStatus(200);
   }).catch(err=> {
       console.log(err)
@@ -72,6 +73,17 @@ app.post('/api/people/add', (req, res)=> {
   })
 })
 
+//remove person from room TEMP
+app.delete('/api/room/removePerson', (req, res)=> {
+  console.log(req)
+  let {uuid, roomid} = req.body;
+  req.app.get('db').deletePersonFromRoom([uuid, roomid]).then(ok=> {
+      res.sendStatus(200);
+  }).catch(err=> {
+      console.log(err)
+      res.status(500).send(err)
+  })
+})
 
 http.listen(3131, () => {
   console.log('listening on *:3131');
