@@ -64,8 +64,8 @@ app.get('/api/room/getPeople/:roomid', (req, res) => {
 //Add person to a room TEMP
 app.post('/api/room/addPerson', (req, res)=> {
   console.log(req)
-  let {uuid, roomid, name} = req.body;
-  req.app.get('db').addPersonToRoom([uuid, roomid, name]).then(ok=> {
+  let {personalId, roomid, name} = req.body;
+  req.app.get('db').addPersonToRoom([personalId, roomid, name]).then(ok=> {
       res.sendStatus(200);
   }).catch(err=> {
       console.log(err)
@@ -76,8 +76,8 @@ app.post('/api/room/addPerson', (req, res)=> {
 //remove person from room TEMP
 app.delete('/api/room/removePerson', (req, res)=> {
   console.log(req)
-  let {uuid, roomid} = req.body;
-  req.app.get('db').deletePersonFromRoom([uuid, roomid]).then(ok=> {
+  let {personalId, roomid} = req.body;
+  req.app.get('db').deletePersonFromRoom([personalId, roomid]).then(ok=> {
       res.sendStatus(200);
   }).catch(err=> {
       console.log(err)

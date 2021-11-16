@@ -4,6 +4,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import StyledCards from '../Cards/Card';
 import './home.css'
 import { io } from "socket.io-client";
+import axios from 'axios';
 
 const socket = io("http://localhost:3131");
 export default class Home extends Component {
@@ -21,7 +22,8 @@ export default class Home extends Component {
       create: '',
       isHost: false,
       reveal: false,
-      people: []
+      people: [],
+      id: ''
     }
     this.handleChange = this.handleChange.bind(this)
     this.submit = this.submit.bind(this)
@@ -33,14 +35,17 @@ export default class Home extends Component {
     this.reJoin = this.reJoin.bind(this)
     this.reveal = this.reveal.bind(this)
     this.updatePeople = this.updatePeople.bind(this)
+    this.getPeople = this.getPeople.bind(this)
   }
   componentDidMount() {
+    socket.on("connect", () => {
+      console.log(socket.id); // ojIckSD2jqNzOqIrAGzL
+      this.setState({id: socket.id})
+    });
     socket.on('incoming data', (msg) => {
       this.updateMessage(msg)
     })
     socket.on('name', (name) => {
-      console.log("1")
-      this.updatePeople(name)
     })
     socket.on('reveal', () => {
       this.reveal()
@@ -104,6 +109,7 @@ export default class Home extends Component {
     if (this.state.room) {
       socket.emit('join', this.state.room, this.state.name)
       socket.emit('name', this.state.room, this.state.name)
+      this.addAnonPersonToRoom(this.state.id, this.state.room, this.state.name)
     }
   }
   handleRoom(event) {
@@ -119,6 +125,17 @@ export default class Home extends Component {
       reveal: !this.state.reveal
     })
   }
+  getPeople(roomid){
+    axios.get(`/api/room/getPeople/${roomid}`).then((res)=> {
+      console.log(res.data)
+    })
+  }
+  addAnonPersonToRoom(personalId, roomid, name){
+    axios.post('/api/room/addPerson', {personalId, roomid, name}).then(()=> {
+      this.getPeople(roomid)
+    }).catch((err)=> console.log(err))
+  }
+
   render() {
 
     const styles = {
