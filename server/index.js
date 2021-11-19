@@ -20,7 +20,6 @@ app.use(bodyParser.text());
 io.on('connection', (socket) => {
   socket.on('join', (roomcode, name)=> {
     socket.join(roomcode)
-    io.to(roomcode).emit('name', name);
   })
   socket.on('chat message', (msg, roomcode) => {
     socket.join(roomcode)
@@ -35,7 +34,7 @@ io.on('connection', (socket) => {
   });
   socket.on('newuser', (people, roomcode) => {
     socket.join(roomcode)
-    io.to(roomcode).emit('newuser', people)
+    io.to(roomcode).emit("list", people)
   });
 
 });
@@ -63,7 +62,7 @@ app.get('/api/room/getPeople/:roomid', (req, res) => {
 
 //Add person to a room TEMP
 app.post('/api/room/addPerson', (req, res)=> {
-  console.log(req)
+  
   let {personalId, roomid, name} = req.body;
   req.app.get('db').addPersonToRoom([personalId, roomid, name]).then(ok=> {
       res.sendStatus(200);

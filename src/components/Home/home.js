@@ -34,18 +34,15 @@ export default class Home extends Component {
     this.handleRoom = this.handleRoom.bind(this)
     this.reJoin = this.reJoin.bind(this)
     this.reveal = this.reveal.bind(this)
-    this.updatePeople = this.updatePeople.bind(this)
     this.getPeople = this.getPeople.bind(this)
+    this.newUser = this.newUser.bind(this)
   }
   componentDidMount() {
     socket.on("connect", () => {
-      console.log(socket.id); // ojIckSD2jqNzOqIrAGzL
       this.setState({id: socket.id})
     });
     socket.on('incoming data', (msg) => {
       this.updateMessage(msg)
-    })
-    socket.on('name', (name) => {
     })
     socket.on('reveal', () => {
       this.reveal()
@@ -53,8 +50,8 @@ export default class Home extends Component {
     socket.on('delete data', () => {
       this.setState({ members: [] })
     })
-    socket.on('newuser', (people) => {
-      this.setState({ people: people })
+    socket.on('list', (people) => {
+      this.setState({people: people.people})
     })
   }
   theme = createMuiTheme({
@@ -70,13 +67,11 @@ export default class Home extends Component {
 
   handleChange(event) {
     this.setState({ messageHandler: event.target.value })
-    //this.showStuff();
   }
   submit() {
     let { name, message } = { name: this.state.name, message: this.state.messageHandler }
     this.setState({ message: { message, name }, messageHandler: '' }, (() => {
       socket.emit('chat message', this.state.message, this.state.room);
-      console.log(this.state.message)
     }))
   }
   updateMessage(msg) {
@@ -86,15 +81,7 @@ export default class Home extends Component {
     members.push(msg)
     this.setState({ members: members, reveal: false }, (() => { console.log(members) }))
   }
-  updatePeople(name) {
-    let people = [...this.state.people, name]
-    this.setState({ people: people }, (() => {
-      socket.emit('newuser', this.state.people, this.state.room)
-    }))
-  }
-  // showStuff(){
 
-  // }
   clearStuff() {
     this.setState({ members: [] })
     socket.emit('delete data', this.state.members)
@@ -103,13 +90,16 @@ export default class Home extends Component {
     this.setState({ name: event.target.value })
   }
   joinRoom() {
-    this.setState({ room: this.state.handleRoom, isHost: false }, (() => this.reJoin()))
+    socket.emit('join', this.state.room, this.state.name)
+    this.setState({ room: this.state.handleRoom, isHost: false }, (() => this.addAnonPersonToRoom(socket.id, this.state.room, this.state.name)))
   }
-  reJoin() {
+  reJoin(newRoom) {
     if (this.state.room) {
       socket.emit('join', this.state.room, this.state.name)
-      socket.emit('name', this.state.room, this.state.name)
-      this.addAnonPersonToRoom(this.state.id, this.state.room, this.state.name)
+      this.addAnonPersonToRoom(socket.id, this.state.room, this.state.name)
+    }
+    else {
+      socket.emit('join', newRoom, this.state.name)
     }
   }
   handleRoom(event) {
@@ -117,7 +107,7 @@ export default class Home extends Component {
   }
   createRoom() {
     let newRoom = Math.random().toString(36).substr(2, 5);
-    this.setState({ room: newRoom, isHost: true }, (() => this.reJoin()))
+    this.setState({ room: newRoom, isHost: true }, (() => this.reJoin(newRoom)))
   }
   reveal() {
     console.log(this.state.members)
@@ -127,13 +117,18 @@ export default class Home extends Component {
   }
   getPeople(roomid){
     axios.get(`/api/room/getPeople/${roomid}`).then((res)=> {
-      console.log(res.data)
+      let listOfPeople = [...res.data]
+      this.setState({people: listOfPeople}, this.newUser(listOfPeople, roomid))
+     
     })
   }
   addAnonPersonToRoom(personalId, roomid, name){
     axios.post('/api/room/addPerson', {personalId, roomid, name}).then(()=> {
       this.getPeople(roomid)
     }).catch((err)=> console.log(err))
+  }
+  newUser(listOfPeople, roomid){
+    socket.emit('newuser',{"people":listOfPeople}, roomid)
   }
 
   render() {
@@ -176,7 +171,7 @@ export default class Home extends Component {
       <div style={{ position: 'absolute', top: '160px', left: '10px' }}>{this.state.people.map((el, i) => {
         return (
           <div key={i + el}>
-            <h3>{el}</h3>
+            <h3>{el.name}</h3>
           </div>
 
         );
