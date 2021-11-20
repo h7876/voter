@@ -1,19 +1,44 @@
 
 #start button  {
     position:relative; 
-    height:40px; 
+    height:60px; 
     border-radius:3px;
-    border: none;
+    border-color: #212121;
     background-color: #212121;
     color:azure;
-    width: 100px;
+    width: 200px;
     margin: 5px;
-    font-size: 13px;
+    font-size: 20px;
     cursor: pointer;
+    font-weight: 200;
+    opacity: 1;
+	  animation-name: fadeInOpacity;
+	  animation-iteration-count: 1;
+	  animation-timing-function: ease-in;
+	  animation-duration: 1500ms;
+}
+#start button:hover{
+  position:relative; 
+  height:60px; 
+  border-radius:3px;
+  background-color: whitesmoke;
+  color:#212121;
+  width: 200px;
+  margin: 5px;
+  font-size: 20px;
+  cursor: pointer;
+  font-weight: 200;
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 250ms;
+  border-color: #212121;
+  border-width: 1px;
 }
 #start {
     position: relative; 
-    padding-top:100px;
+    padding-top:60px;
     margin:auto;
     display:flex;
     direction: row;
@@ -112,4 +137,24 @@
     background-color: #bbb;
     color: black;
     transform: rotateX(180deg);
+  }
+  .title {
+    padding-top: 160px;
+    font-size: 80px;
+    color: #212121;
+    position: relative;
+    font-weight: 300;
+    opacity: 1;
+	  animation-name: fadeInOpacity;
+	  animation-iteration-count: 1;
+	  animation-timing-function: ease-in;
+	  animation-duration: 1500ms;
+  }
+  @keyframes fadeInOpacity {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }

@@ -132,7 +132,6 @@ export default class Home extends Component {
   }
 
   render() {
-
     const styles = {
       div: {
         display: 'flex',
@@ -173,14 +172,9 @@ export default class Home extends Component {
           <div key={i + el}>
             <h3>{el.name}</h3>
           </div>
-
         );
       })}
       </div>
-      {/* <h3 style={{position:'absolute', marginTop:'220px'}}>{this.state.name}</h3> */}
-      {/* <h3 style={{position:'absolute', marginTop:'240px'}}>{this.state.isHost.toString()}</h3> */}
-      {/* <div style={{position:'absolute', marginTop:'230px'}} >{this.state.message}</div> */}
-
       {this.state.isHost ?
         <div id="no">
           <input value={this.state.messageHandler} style={{ position: 'relative' }} onChange={this.handleChange} placeholder="Type your vote here..."></input>
@@ -211,7 +205,6 @@ export default class Home extends Component {
 
                 </div>
               </div>
-
             );
           })}
           </div>
@@ -235,9 +228,6 @@ export default class Home extends Component {
       </div>
     </div>
 
-
-
-
     const showOptions = this.state.room;
     let options;
     if (!showOptions && this.state.create === 'true') {
@@ -255,13 +245,13 @@ export default class Home extends Component {
     }
     return (
       <div>
+        <h1 className="title">Voter</h1>
         <ThemeProvider theme={this.theme}>
           <AppBar position="fixed">
             <Toolbar />
           </AppBar>
         </ThemeProvider>
         {options}
-
       </div>
     )
   }
