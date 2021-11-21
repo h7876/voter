@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { Toolbar, AppBar } from '@material-ui/core';
+
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import StyledCards from '../Cards/Card';
 import './home.css'
 import { io } from "socket.io-client";
 import axios from 'axios';
+
+
 
 const socket = io("http://localhost:3131");
 export default class Home extends Component {
@@ -23,7 +26,8 @@ export default class Home extends Component {
       isHost: false,
       reveal: false,
       people: [],
-      id: ''
+      id: '',
+      showBack: false
     }
     this.handleChange = this.handleChange.bind(this)
     this.submit = this.submit.bind(this)
@@ -36,6 +40,7 @@ export default class Home extends Component {
     this.reveal = this.reveal.bind(this)
     this.getPeople = this.getPeople.bind(this)
     this.newUser = this.newUser.bind(this)
+    this.toggleBack = this.toggleBack.bind(this)
   }
   componentDidMount() {
     socket.on("connect", () => {
@@ -91,7 +96,7 @@ export default class Home extends Component {
   }
   joinRoom() {
     socket.emit('join', this.state.room, this.state.name)
-    this.setState({ room: this.state.handleRoom, isHost: false }, (() => this.addAnonPersonToRoom(socket.id, this.state.room, this.state.name)))
+    this.setState({ room: this.state.handleRoom, isHost: false, showBack: 'true' }, (() => this.addAnonPersonToRoom(socket.id, this.state.room, this.state.name)))
   }
   reJoin(newRoom) {
     if (this.state.room) {
@@ -107,7 +112,7 @@ export default class Home extends Component {
   }
   createRoom() {
     let newRoom = Math.random().toString(36).substr(2, 5);
-    this.setState({ room: newRoom, isHost: true }, (() => this.reJoin(newRoom)))
+    this.setState({ room: newRoom, isHost: true , showBack: 'true'}, (() => this.reJoin(newRoom)))
   }
   reveal() {
     console.log(this.state.members)
@@ -130,7 +135,9 @@ export default class Home extends Component {
   newUser(listOfPeople, roomid){
     socket.emit('newuser',{"people":listOfPeople}, roomid)
   }
-
+  toggleBack(){
+    this.setState({room: '', create:'', showBack: !this.state.showBack})
+  }
   render() {
     const styles = {
       div: {
@@ -150,20 +157,45 @@ export default class Home extends Component {
         padding: 10
       }
     };
+    const backArrowStyles = {
+        backgroundColor: 'transparent',
+        border: 'none',
+        left:5,
+        top:70,
+        position:'absolute',
+        width: 35,
+        height:35
+    }
+
+    const back = (
+      <div>
+        {this.state.showBack ? <button style={backArrowStyles} onClick={this.toggleBack}>
+          <svg onClick={this.toggleBack} style={{ position: "absolute", top: 0, left: 0, cursor: 'pointer' }} xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" className="bi bi-arrow-left" viewBox="0 0 18 18">
+            <path onClick={this.toggleBack} style={{ cursor: "pointer" }} fillRule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H
+        14.5A.5.5 0 0 0 15 8z" />
+          </svg>
+        </button> : null}
+      </div>
+    )
+      
     let createOrJoin = <div id="start">
-      <button style={{ position: 'relative' }} onClick={(() => { this.setState({ create: 'true' }) })}>Create Room</button>
-      <button style={{ position: 'relative' }} onClick={(() => { this.setState({ create: 'false' }) })}>Join Room</button>
+      <button style={{ position: 'relative' }} onClick={(() => { this.setState({ create: 'true', showBack: 'true' }) })}>Create Room</button>
+      <button style={{ position: 'relative' }} onClick={(() => { this.setState({ create: 'false', showBack: 'true' }) })}>Join Room</button>
     </div>
-    let create = <div id="no">
+
+    let create = 
+    <div id="no">
       <input style={{ position: 'relative' }} onChange={this.handleName} placeholder="Name"></input>
       <button style={{ position: 'relative' }} onClick={this.createRoom}>Create</button>
     </div>
+    
     let join = <div id="no">
       <input style={{ position: 'relative' }} onChange={this.handleRoom} placeholder="Room Code"></input>
       <br></br>
       <input style={{ position: 'relative' }} onChange={this.handleName} placeholder="Name"></input>
       <button style={{ position: 'relative' }} onClick={this.joinRoom}>Join</button>
     </div>
+
     let content = <div>
       <h3 style={{ position: 'absolute', top: '80px', left: '10px' }}>Room Code: {this.state.room}</h3>
       <h3 style={{ position: 'absolute', top: '120px', left: '10px' }}>People in Room:</h3>
@@ -228,11 +260,10 @@ export default class Home extends Component {
       </div>
     </div>
 
-    const showOptions = this.state.room;
+    let showOptions = this.state.room;
     let options;
     if (!showOptions && this.state.create === 'true') {
       options = create
-
     }
     if (!showOptions && this.state.create === 'false') {
       options = join
@@ -240,13 +271,15 @@ export default class Home extends Component {
     if (!showOptions && !this.state.create) {
       options = createOrJoin
     }
-    if (showOptions) {
+    if (this.state.room) {
       options = content
     }
+
     return (
       <div>
-        <h1 className="title">Voter</h1>
+        {back}
         <ThemeProvider theme={this.theme}>
+        <h1 className="title">Voter</h1>
           <AppBar position="fixed">
             <Toolbar />
           </AppBar>
