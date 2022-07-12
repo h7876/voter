@@ -4,7 +4,6 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import StyledCards from '../Cards/Card';
 import './home.css'
 import { io } from 'socket.io-client';
-import axios from 'axios';
 const socket = io('http://localhost:3131');
 
 export default class Home extends Component {
@@ -119,17 +118,9 @@ export default class Home extends Component {
     })
   }
   getPeople(roomid){
-    // axios.get(`/api/room/getPeople/${roomid}`).then((res)=> {
-    //   let listOfPeople = [...res.data]
-    //   this.setState({people: listOfPeople}, this.newUser(listOfPeople, roomid))
-     
-    // })
     this.newUser(this.state.name, roomid)
   }
   addAnonPersonToRoom(personalId, roomid, name){
-    // axios.post('/api/room/addPerson', {personalId, roomid, name}).then(()=> {
-    //   this.getPeople(roomid)
-    // }).catch((err)=> console.log(err))
     this.getPeople(roomid)
   }
   newUser(username, roomid){

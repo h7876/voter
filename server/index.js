@@ -55,12 +55,10 @@ io.on('connection', (socket) => {
     io.to(roomcode).emit('reveal')
   });
   socket.on('newuser', (roomcode) => {
-    var list;
+    let list = [];
     getUsersInRoom(roomcode).then((userNames => {
-      let people = [];
       for(var s = 0; s<userNames.length; s++){
-        people.push(userNames[s].username)}
-      list = people;
+        list.push(userNames[s].username)}
       io.to(roomcode).emit("list", list)
     }))
     socket.join(roomcode)
