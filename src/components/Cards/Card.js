@@ -14,7 +14,6 @@ const NewCard = styled(Card)({
 });
 
 export default function StyledCards(text, show) {
-  console.log(text, show)
   return <NewCard>
     
     {show ? 

@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 import { Toolbar, AppBar } from '@material-ui/core';
-
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import StyledCards from '../Cards/Card';
 import './home.css'
-import { io } from "socket.io-client";
-import axios from 'axios';
+import { io } from 'socket.io-client';
+const socket = io('http://localhost:3131');
 
-
-
-const socket = io("http://localhost:3131");
 export default class Home extends Component {
 
   constructor() {
@@ -42,9 +38,10 @@ export default class Home extends Component {
     this.newUser = this.newUser.bind(this)
     this.toggleBack = this.toggleBack.bind(this)
     this.copyText = this.copyText.bind(this)
+    this.addAnonPersonToRoom = this.addAnonPersonToRoom.bind(this)
   }
   componentDidMount() {
-    socket.on("connect", () => {
+    socket.on('connect', () => {
       this.setState({id: socket.id})
     });
     socket.on('incoming data', (msg) => {
@@ -56,8 +53,8 @@ export default class Home extends Component {
     socket.on('delete data', () => {
       this.setState({ members: [] })
     })
-    socket.on('list', (people) => {
-      this.setState({people: people.people})
+    socket.on('list', (list) => {
+      this.setState({people: list})
     })
   }
   theme = createMuiTheme({
@@ -81,7 +78,6 @@ export default class Home extends Component {
     }))
   }
   updateMessage(msg) {
-    console.log("maybe")
     let members = [...this.state.members]
 
     members.push(msg)
@@ -96,8 +92,8 @@ export default class Home extends Component {
     this.setState({ name: event.target.value })
   }
   joinRoom() {
-    socket.emit('join', this.state.room, this.state.name)
-    this.setState({ room: this.state.handleRoom, isHost: false, showBack: 'true' }, (() => this.addAnonPersonToRoom(socket.id, this.state.room, this.state.name)))
+    socket.emit('join', this.state.handleRoom, this.state.name)
+    this.setState({ room: this.state.handleRoom, isHost: false, showBack: 'true' }, this.addAnonPersonToRoom(socket.id, this.state.handleRoom, this.state.name))
   }
   reJoin(newRoom) {
     if (this.state.room) {
@@ -122,19 +118,13 @@ export default class Home extends Component {
     })
   }
   getPeople(roomid){
-    axios.get(`/api/room/getPeople/${roomid}`).then((res)=> {
-      let listOfPeople = [...res.data]
-      this.setState({people: listOfPeople}, this.newUser(listOfPeople, roomid))
-     
-    })
+    this.newUser(this.state.name, roomid)
   }
   addAnonPersonToRoom(personalId, roomid, name){
-    axios.post('/api/room/addPerson', {personalId, roomid, name}).then(()=> {
-      this.getPeople(roomid)
-    }).catch((err)=> console.log(err))
+    this.getPeople(roomid)
   }
-  newUser(listOfPeople, roomid){
-    socket.emit('newuser',{"people":listOfPeople}, roomid)
+  newUser(username, roomid){
+    socket.emit('newuser', roomid)
   }
   toggleBack(){
     this.setState({room: '', create:'', showBack: !this.state.showBack})
@@ -202,18 +192,19 @@ export default class Home extends Component {
 
     let content = <div>
       <h3 style={{ position: 'absolute', top: '80px', left: '10px' }}>Room Code: {this.state.room}</h3>
-      <svg id="copy" onClick={this.copyText} style={{position:'absolute', top:'100px', left:'190px', cursor:'pointer'}} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-files" viewBox="0 0 16 16">
+      <svg id="copy" onClick={this.copyText} style={{position:'absolute', top:'100px', left:'190px', cursor:'pointer'}} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-files" viewBox="0 0 16 16">
         <path d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z" />
       </svg>
       <h3 style={{ position: 'absolute', top: '120px', left: '10px' }}>People in Room:</h3>
       <div style={{ position: 'absolute', top: '160px', left: '10px' }}>{this.state.people.map((el, i) => {
         return (
           <div key={i + el}>
-            <h3>{el.name}</h3>
+            <h3>{el}</h3>
           </div>
         );
       })}
       </div>
+
       {this.state.isHost ?
         <div id="no">
           <input value={this.state.messageHandler} style={{ position: 'relative' }} onChange={this.handleChange} placeholder="Type your vote here..."></input>
