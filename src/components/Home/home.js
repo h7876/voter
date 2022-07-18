@@ -212,7 +212,7 @@ export default class Home extends Component {
           <button style={{ position: 'relative' }} onClick={this.clearStuff}>Clear</button>
           <button style={{ position: 'relative' }} onClick={() =>
             socket.emit('reveal', this.state.room)
-          }>Reveal</button>
+          }>{this.state.reveal ? "Hide" : "Reveal"}</button>
         </div>
         :
         <div id="no" style={{ position: 'relative' }}>
