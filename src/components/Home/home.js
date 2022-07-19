@@ -184,12 +184,12 @@ export default class Home extends Component {
     </div>
 
     let create = 
-    <div id="no">
+    <div id="main">
       <input style={{ position: 'relative' }} onChange={this.handleName} placeholder="Name"></input>
       <button style={{ position: 'relative' }} onClick={this.createRoom}>Create Room</button>
     </div>
     
-    let join = <div id="no">
+    let join = <div id="main">
       <input style={{ position: 'relative' }} onChange={this.handleRoom} placeholder="Room Code"></input>
       <br></br>
       <input style={{ position: 'relative' }} onChange={this.handleName} placeholder="Name"></input>
@@ -212,7 +212,7 @@ export default class Home extends Component {
       </div>
 
       {this.state.isHost ?
-        <div id="no">
+        <div id="main">
           <input value={this.state.messageHandler} style={{ position: 'relative' }} onChange={this.handleChange} placeholder="Type your vote here..."></input>
           <button className="submit" onClick={this.submit}>Submit</button>
           <button style={{ position: 'relative' }} onClick={this.clearStuff}>Clear</button>
@@ -221,7 +221,7 @@ export default class Home extends Component {
           }>{this.state.reveal ? "Hide" : "Reveal"}</button>
         </div>
         :
-        <div id="no" style={{ position: 'relative' }}>
+        <div id="main" style={{ position: 'relative' }}>
           <input value={this.state.messageHandler} style={{ position: 'relative' }} onChange={this.handleChange} placeholder="Type your vote here..."></input>
           <button style={{ position: 'relative' }} onClick={this.submit}>Submit</button>
         </div>
