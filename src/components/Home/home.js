@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Toolbar, AppBar } from '@material-ui/core';
+import { Toolbar, AppBar, Typography } from '@material-ui/core';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import StyledCards from '../Cards/Card';
 import './home.css'
@@ -160,6 +160,12 @@ export default class Home extends Component {
         width: 35,
         height:35
     }
+    const title = (
+      <Typography variant="h1" component="div" style={{margin:"auto", fontWeight: 300, fontSize:"40px"}}>
+        {this.state.showBack ? "Voter" : null}
+      </Typography>)
+    //Can use centerInfo to display instructions, or other things down the line.
+    let centerInfo = (this.state.showBack? <h1 className="title"></h1> : <h1 className="title">Voter</h1>)
 
     const back = (
       <div>
@@ -180,7 +186,7 @@ export default class Home extends Component {
     let create = 
     <div id="no">
       <input style={{ position: 'relative' }} onChange={this.handleName} placeholder="Name"></input>
-      <button style={{ position: 'relative' }} onClick={this.createRoom}>Create</button>
+      <button style={{ position: 'relative' }} onClick={this.createRoom}>Create Room</button>
     </div>
     
     let join = <div id="no">
@@ -277,9 +283,11 @@ export default class Home extends Component {
       <div>
         {back}
         <ThemeProvider theme={this.theme}>
-        <h1 className="title">Voter</h1>
+        {centerInfo}
           <AppBar position="fixed">
-            <Toolbar />
+            <Toolbar>
+              {title}
+            </Toolbar>
           </AppBar>
         </ThemeProvider>
         {options}
