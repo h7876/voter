@@ -164,8 +164,18 @@ export default class Home extends Component {
       <Typography variant="h1" component="div" style={{margin:"auto", fontWeight: 300, fontSize:"40px"}}>
         {this.state.showBack ? "Voter" : null}
       </Typography>)
+      
     //Can use centerInfo to display instructions, or other things down the line.
-    let centerInfo = (this.state.showBack? <h1 className="title"></h1> : <h1 className="title">Voter</h1>)
+    let centerInfo
+    if(this.state.showBack && !this.state.room){
+     centerInfo =  <h1 className="title" style={{fontSize:"40px"}}>What should we call you?</h1>
+    }
+    if(!this.state.showBack){
+     centerInfo = <h1 className="title">Voter</h1>
+    }
+    if(this.state.showBack && this.state.room) {
+      centerInfo =  <h1 className="title"></h1>
+    }
 
     const back = (
       <div>
