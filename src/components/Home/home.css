@@ -4,13 +4,13 @@
     height:60px; 
     border-radius:3px;
     border-color: #212121;
+    border-style: none;
     background-color: #212121;
     color:azure;
     width: 200px;
     margin: 5px;
     font-size: 20px;
     cursor: pointer;
-    font-weight: 200;
     opacity: 1;
 	  animation-name: fadeInOpacity;
 	  animation-iteration-count: 1;
@@ -21,20 +21,21 @@
   position:relative; 
   height:60px; 
   border-radius:3px;
+  border-style: solid;
+  border-color: #212121;
+  border-width: 2px;
   background-color: whitesmoke;
   color:#212121;
   width: 200px;
   margin: 5px;
   font-size: 20px;
   cursor: pointer;
-  font-weight: 200;
   opacity: 1;
   animation-name: fadeInOpacity;
   animation-iteration-count: 1;
   animation-timing-function: ease-in;
   animation-duration: 250ms;
   border-color: #212121;
-  border-width: 1px;
 }
 #start {
     position: relative; 
@@ -46,29 +47,33 @@
     justify-content: center;
     flex-wrap: wrap;
 }
-#no button  {
+#main button  {
     position:relative; 
-    height:40px; 
+    height:42px; 
     border-radius:3px;
     border: none;
     background-color: #212121;
     color:azure;
-    width: 60px;
+    width: auto;
+    min-width: 93px;
     margin: 5px;
     font-size: 13px;
     cursor: pointer;
 }
-#no button:hover {
+#main button:hover {
     position:relative; 
-    height:40px; 
+    height:42px; 
     border-radius:3px;
-    border: none;
+    border: solid;
+    border-width: 2px;
+    border-color: #212121;
     background-color: whitesmoke;
     color:#212121;
-    width: 60px;
+    width: auto;
+    min-width: 93px;
     margin: 5px;
 }
-#no input  {
+#main input  {
     position:relative; 
     height:40px; 
     border-radius:3px;
@@ -81,7 +86,7 @@
     padding-left: 5px;
 }
 
-#no {
+#main {
     position: relative; 
     padding-top:100px;
     margin:auto;

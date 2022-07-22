@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Toolbar, AppBar } from '@material-ui/core';
+import { Toolbar, AppBar, Typography } from '@material-ui/core';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import StyledCards from '../Cards/Card';
 import './home.css'
@@ -160,6 +160,22 @@ export default class Home extends Component {
         width: 35,
         height:35
     }
+    const title = (
+      <Typography variant="h1" component="div" style={{margin:"auto", fontWeight: 300, fontSize:"40px"}}>
+        {this.state.showBack ? "Voter" : null}
+      </Typography>)
+      
+    //Can use centerInfo to display instructions, or other things down the line.
+    let centerInfo
+    if(this.state.showBack && !this.state.room){
+     centerInfo =  <h1 className="title" style={{fontSize:"40px"}}>What should we call you?</h1>
+    }
+    if(!this.state.showBack){
+     centerInfo = <h1 className="title">Voter</h1>
+    }
+    if(this.state.showBack && this.state.room) {
+      centerInfo =  <h1 className="title"></h1>
+    }
 
     const back = (
       <div>
@@ -178,12 +194,12 @@ export default class Home extends Component {
     </div>
 
     let create = 
-    <div id="no">
+    <div id="main">
       <input style={{ position: 'relative' }} onChange={this.handleName} placeholder="Name"></input>
-      <button style={{ position: 'relative' }} onClick={this.createRoom}>Create</button>
+      <button style={{ position: 'relative' }} onClick={this.createRoom}>Create Room</button>
     </div>
     
-    let join = <div id="no">
+    let join = <div id="main">
       <input style={{ position: 'relative' }} onChange={this.handleRoom} placeholder="Room Code"></input>
       <br></br>
       <input style={{ position: 'relative' }} onChange={this.handleName} placeholder="Name"></input>
@@ -206,16 +222,16 @@ export default class Home extends Component {
       </div>
 
       {this.state.isHost ?
-        <div id="no">
+        <div id="main">
           <input value={this.state.messageHandler} style={{ position: 'relative' }} onChange={this.handleChange} placeholder="Type your vote here..."></input>
           <button className="submit" onClick={this.submit}>Submit</button>
           <button style={{ position: 'relative' }} onClick={this.clearStuff}>Clear</button>
           <button style={{ position: 'relative' }} onClick={() =>
             socket.emit('reveal', this.state.room)
-          }>Reveal</button>
+          }>{this.state.reveal ? "Hide" : "Reveal"}</button>
         </div>
         :
-        <div id="no" style={{ position: 'relative' }}>
+        <div id="main" style={{ position: 'relative' }}>
           <input value={this.state.messageHandler} style={{ position: 'relative' }} onChange={this.handleChange} placeholder="Type your vote here..."></input>
           <button style={{ position: 'relative' }} onClick={this.submit}>Submit</button>
         </div>
@@ -277,9 +293,11 @@ export default class Home extends Component {
       <div>
         {back}
         <ThemeProvider theme={this.theme}>
-        <h1 className="title">Voter</h1>
+        {centerInfo}
           <AppBar position="fixed">
-            <Toolbar />
+            <Toolbar>
+              {title}
+            </Toolbar>
           </AppBar>
         </ThemeProvider>
         {options}
