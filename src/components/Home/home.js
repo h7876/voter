@@ -45,7 +45,7 @@ export default class Home extends Component {
       this.setState({id: socket.id})
     });
     socket.on('incoming data', (msg) => {
-      this.updateMessage(msg)
+      this.castVote(msg)
     })
     socket.on('reveal', () => {
       this.reveal()
@@ -55,6 +55,9 @@ export default class Home extends Component {
     })
     socket.on('list', (list) => {
       this.setState({people: list})
+    })
+    socket.on('votes', (votes) => {
+      this.syncVotes(votes)
     })
   }
   theme = createMuiTheme({
@@ -77,13 +80,15 @@ export default class Home extends Component {
       socket.emit('chat message', this.state.message, this.state.room);
     }))
   }
-  updateMessage(msg) {
+  castVote(msg) {
     let members = [...this.state.members]
-
+    socket.emit('syncVotes', this.state.room)
     members.push(msg)
     this.setState({ members: members, reveal: false }, (() => { console.log(members) }))
   }
-
+  syncVotes(votes){
+    this.setState({ members: votes, reveal: false }, (() => { console.log(votes) }))
+  }
   clearStuff() {
     this.setState({ members: [] })
     socket.emit('delete data', this.state.members)

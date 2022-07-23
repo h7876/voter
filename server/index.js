@@ -35,6 +35,11 @@ async function getUsersInRoom(roomid){
   let userNames = await io.in(roomid).fetchSockets()
   return userNames; 
 }
+
+async function syncVotesForRoom(roomid){
+  let data = await io.in(roomid).fetchSockets()
+  return data; 
+}
 //End Functions
 
 //Start Socket Events
@@ -44,9 +49,18 @@ io.on('connection', (socket) => {
     socket.join(roomcode)
   })
   socket.on('chat message', (msg, roomcode) => {
-    socket.join(roomcode)
+    socket.data = msg
     io.to(roomcode).emit('incoming data', msg)
   });
+  socket.on('syncVotes', (roomcode)=> {
+    let votes = [];
+    syncVotesForRoom(roomcode).then((data => {
+      for(var v = 0; v < data.length; v++){
+        console.log(data[v])
+        votes.push(data[v].data)}
+      io.to(roomcode).emit("votes", votes)
+    }))
+  })
   socket.on('delete data', () => {
     socket.broadcast.emit('delete data')
   });
@@ -58,10 +72,18 @@ io.on('connection', (socket) => {
     let list = [];
     getUsersInRoom(roomcode).then((userNames => {
       for(var s = 0; s<userNames.length; s++){
+        console.log(userNames[s])
         list.push(userNames[s].username)}
       io.to(roomcode).emit("list", list)
     }))
     socket.join(roomcode)
+    let votes = [];
+    syncVotesForRoom(roomcode).then((data => {
+      for(var v = 0; v < data.length; v++){
+        console.log(data[v])
+        votes.push(data[v].data)}
+      io.to(roomcode).emit("votes", votes)
+    }))
   });
 });
 
