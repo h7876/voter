@@ -11,7 +11,7 @@ export default class Home extends Component {
   constructor() {
     super();
     this.state = {
-      members: [],
+      votes: [],
       stuffs: [],
       message: {},
       messageHandler: '',
@@ -45,16 +45,19 @@ export default class Home extends Component {
       this.setState({id: socket.id})
     });
     socket.on('incoming data', (msg) => {
-      this.updateMessage(msg)
+      this.castVote(msg)
     })
     socket.on('reveal', () => {
       this.reveal()
     })
     socket.on('delete data', () => {
-      this.setState({ members: [] })
+      this.setState({ votes: [] })
     })
     socket.on('list', (list) => {
       this.setState({people: list})
+    })
+    socket.on('votes', (votes) => {
+      this.syncVotes(votes)
     })
   }
   theme = createMuiTheme({
@@ -77,16 +80,24 @@ export default class Home extends Component {
       socket.emit('chat message', this.state.message, this.state.room);
     }))
   }
-  updateMessage(msg) {
-    let members = [...this.state.members]
-
-    members.push(msg)
-    this.setState({ members: members, reveal: false }, (() => { console.log(members) }))
+  castVote(msg) {
+    let votes = [...this.state.votes]
+    socket.emit('syncVotes', this.state.room)
+    votes.push(msg)
+    this.setState({ votes: votes, reveal: false })
   }
-
+  syncVotes(votes){
+    let filteredVotes = []
+    for(let v=0; v<votes.length; v++){
+      if (Object.entries(votes[v]).length > 0) {
+        filteredVotes.push(votes[v])
+      }
+    }
+    this.setState({ votes: filteredVotes, reveal: false })
+  }
   clearStuff() {
-    this.setState({ members: [] })
-    socket.emit('delete data', this.state.members)
+    this.setState({ votes: [] })
+    socket.emit('delete data', this.state.votes)
   }
   handleName(event) {
     this.setState({ name: event.target.value })
@@ -112,7 +123,6 @@ export default class Home extends Component {
     this.setState({ room: newRoom, isHost: true , showBack: 'true'}, (() => this.reJoin(newRoom)))
   }
   reveal() {
-    console.log(this.state.members)
     this.setState({
       reveal: !this.state.reveal
     })
@@ -238,7 +248,7 @@ export default class Home extends Component {
       }
       <div style={{ paddingTop: '50px', margin: 'auto', width: '50%' }}>
         {this.state.reveal === true ?
-          <div style={styles.div}>{this.state.members.map((el, i) => {
+          <div style={styles.div}>{this.state.votes.map((el, i) => {
             return (
               <div key={i + el} className="flip-card-flip">
                 <div className="flip-card-inner">
@@ -255,7 +265,7 @@ export default class Home extends Component {
           })}
           </div>
           :
-          <div style={styles.div}>{this.state.members.map((el, i) => {
+          <div style={styles.div}>{this.state.votes.map((el, i) => {
             return (
               <div key={i + el} className="flip-card">
                 <div className="flip-card-inner">
