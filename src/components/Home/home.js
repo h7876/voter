@@ -87,7 +87,13 @@ export default class Home extends Component {
     this.setState({ members: members, reveal: false }, (() => { console.log(members) }))
   }
   syncVotes(votes){
-    this.setState({ members: votes, reveal: false }, (() => { console.log(votes) }))
+    let filteredVotes = []
+    for(let v=0; v<votes.length; v++){
+      if (Object.entries(votes[v]).length > 0) {
+        filteredVotes.push(votes[v])
+      }
+    }
+    this.setState({ members: filteredVotes, reveal: false })
   }
   clearStuff() {
     this.setState({ members: [] })
