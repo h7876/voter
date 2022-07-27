@@ -56,12 +56,12 @@ io.on('connection', (socket) => {
     let votes = [];
     syncVotesForRoom(roomcode).then((data => {
       for(var v = 0; v < data.length; v++){
-        console.log(data[v])
         votes.push(data[v].data)}
       io.to(roomcode).emit("votes", votes)
     }))
   })
   socket.on('delete data', () => {
+    socket.data = {}
     socket.broadcast.emit('delete data')
   });
   socket.on('reveal', (roomcode) => {
@@ -72,7 +72,6 @@ io.on('connection', (socket) => {
     let list = [];
     getUsersInRoom(roomcode).then((userNames => {
       for(var s = 0; s<userNames.length; s++){
-        console.log(userNames[s])
         list.push(userNames[s].username)}
       io.to(roomcode).emit("list", list)
     }))
@@ -80,7 +79,6 @@ io.on('connection', (socket) => {
     let votes = [];
     syncVotesForRoom(roomcode).then((data => {
       for(var v = 0; v < data.length; v++){
-        console.log(data[v])
         votes.push(data[v].data)}
       io.to(roomcode).emit("votes", votes)
     }))
