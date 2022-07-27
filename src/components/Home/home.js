@@ -51,7 +51,7 @@ export default class Home extends Component {
       this.reveal()
     })
     socket.on('delete data', () => {
-      this.setState({ votes: [] })
+      this.setState({ votes: [] }, (()=> {socket.emit('chat message', {}, this.state.room)}))
     })
     socket.on('list', (list) => {
       this.setState({people: list})

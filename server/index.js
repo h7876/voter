@@ -62,6 +62,7 @@ io.on('connection', (socket) => {
     }))
   })
   socket.on('delete data', () => {
+    socket.data = {}
     socket.broadcast.emit('delete data')
   });
   socket.on('reveal', (roomcode) => {
