@@ -218,18 +218,21 @@ export default class Home extends Component {
 
     let content = <div>
       <h3 style={{ position: 'absolute', top: '60px', right: '40px' }}>Room Code: {this.state.room}</h3>
+      <div className="tooltip">
+      <span className="tooltiptext"> Copy </span>
       <svg id="copy" onClick={this.copyText} style={{position:'absolute', top:'83px', right:'10px', cursor:'pointer'}} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-files" viewBox="0 0 16 16">
         <path d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z" />
       </svg>
+      </div>
       <h3 style={{ position: 'absolute', top: '120px', left: '10px' }}>People in Room:</h3>
       <div style={{ position: 'absolute', top: '160px', left: '10px' }}>{this.state.people.map((el, i) => {
         return (
           <div key={i + el} style={{display: 'flex', width: 'auto', minWidth:'20px'}}>
             <h3>{el}</h3>
             {this.state.votes.map((vote, i)=> {
-              if(vote.name == el){
+              if(vote.name === el){
                 return (
-                  <svg key={vote + el} style={{position: 'relative', top:'22px', left:'10px'}} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                  <svg key={vote + el + i} style={{position: 'relative', top:'22px', left:'10px'}} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-check-circle-fill" viewBox="0 0 16 16">
                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
                   </svg> 
                 )}
