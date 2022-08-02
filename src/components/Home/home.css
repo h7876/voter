@@ -183,6 +183,7 @@
     top: 110px;
     right: 5px;
     margin-left: -60px;
+    font-size: 13px;
   }
   
   .tooltip:hover .tooltiptext {
