@@ -190,7 +190,7 @@ export default class Home extends Component {
      centerInfo = <h1 className="title">Voter</h1>
     }
     if(this.state.showBack && this.state.room) {
-      centerInfo =  <h1 className="title"></h1>
+      centerInfo =  <h1 className="title" style={{fontSize:"40px"}}>Cast your vote</h1>
     }
 
     const back = (
@@ -230,7 +230,7 @@ export default class Home extends Component {
         <path d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z" />
       </svg>
       </div>
-      <h3 style={{ position: 'absolute', top: '120px', left: '10px' }}>People in Room:</h3>
+      <h3 style={{ position: 'absolute', top: '120px', left: '10px', borderBottom: '1px solid black' }}>People in Room:</h3>
       <div style={{ position: 'absolute', top: '160px', left: '10px' }}>{this.state.people.map((el, i) => {
         return (
           <div key={i + el} style={{display: 'flex', width: 'auto', minWidth:'20px'}}>
@@ -242,6 +242,7 @@ export default class Home extends Component {
                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
                   </svg> 
                 )}
+                else {return null}
             })}
           </div>
         );})}
